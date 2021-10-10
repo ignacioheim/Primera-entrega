@@ -1,9 +1,9 @@
-let products = [];
+let productosCarrito = [];
 
 let len = 1;
 
-class Product {
-    
+class Carrito {
+
     constructor (nombre, descripcion, codigo, url, precio, stock) {
         this.nombre = nombre,
         this.descripcion = descripcion,
@@ -24,14 +24,6 @@ class Product {
             id: len++
         })
     }
+};
 
-    addTimeStamp = () => {
-        products.forEach((data)=>{
-        let d = new Date();
-        let n = d.toLocaleString();
-        data.timestamp = n;
-        })
-    }
-}
-
-export default {products, Product}
+export default {productosCarrito, len, Carrito};

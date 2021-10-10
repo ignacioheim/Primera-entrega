@@ -1,0 +1,32 @@
+[
+	{
+		"nombre": "GomaAaaAaAaaaa",
+		"descripcion": "articulo librería",
+		"codigo": "A0001",
+		"url": "url.com.ar/imagen",
+		"precio": 500,
+		"stock": 15,
+		"id": 1,
+		"timestamp": "10/10/2021 16:55:54"
+	},
+	{
+		"nombre": "GomaAaaAaAaaaa",
+		"descripcion": "articulo librería",
+		"codigo": "A0001",
+		"url": "url.com.ar/imagen",
+		"precio": 500,
+		"stock": 15,
+		"id": 2,
+		"timestamp": "10/10/2021 16:55:54"
+	},
+	{
+		"nombre": "ReglaaAAaaaA",
+		"descripcion": "articulo librería",
+		"codigo": "A0001",
+		"url": "url.com.ar/imagen",
+		"precio": 500,
+		"stock": 15,
+		"id": 3,
+		"timestamp": "10/10/2021 16:55:54"
+	}
+]

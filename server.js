@@ -1,5 +1,7 @@
-import modulo from './producto.js'
-import express from 'express'
+import product from './producto.js';
+import carts from './carrito.js';
+import express from 'express';
+import fs from 'fs';
 //import path from 'path';
 //import { fileURLToPath } from 'url';
 //import { dirname } from 'path';
@@ -25,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 // Importo el módulo de productos
-let listProducts = modulo.products;
+let listProducts = product.products;
 
 /* Variable administrador */
 const administrador = true;
@@ -46,8 +48,6 @@ products.get('/listar', (req,res)=>{
     }
 });
 
-let len = 1;
-
 products.post('/agregar', (req,res)=>{
     
     if(administrador) {
@@ -57,13 +57,26 @@ products.post('/agregar', (req,res)=>{
         let url = req.body.url
         let precio = req.body.precio
         let stock = req.body.stock
-        let item = new modulo.Product(nombre,descripcion,codigo,url,precio,stock)
-        item.addProducts();
+        let item = new product.Product(nombre,descripcion,codigo,url,precio,stock)
+        //GUARDAR PRODUCTOS EN MEMORIA
+        item.addProducts();        
         item.addTimeStamp();
-         
-        //console.log(item)
-        //res.json(item)
         res.json({listProducts})
+        // GUARDAR ARCHIVO EN SISTEMA
+        let guardar = (name, info) => {
+            return fs.promises.appendFile('./productos.txt', info)
+        };
+        async function myFunc () {
+            try {
+                const writeFile = await guardar('./productos.txt', JSON.stringify(listProducts, null, '\t'))
+                console.log("Archivo guardado con éxito.")
+            }
+            catch (err) {
+                console.log("Error en guardar.", err)
+            }
+        }
+        myFunc();
+
     } else {
         res.json({
             error: '-1',
@@ -114,14 +127,51 @@ products.delete('/borrar/:id', (req,res)=>{
 
 ///// Rutas carrito /////
 
+let listCarrito = carts.productosCarrito;
+
 cart.get('/listar', (req,res)=>{
-    res.json("Se está probando.")
+    if (listCarrito.length > 0) {
+        res.json(listCarrito);
+    } else {
+        res.json("No hay productos en el carrito.");
+    }
 });
 
-cart.post('/agregar', (req,res)=>{
-    req.json(body)
+cart.post('/agregar/:id', (req,res)=>{
+    let params = req.params;
+    if (parseInt(params.id)>0 && parseInt(params.id)<=listProducts.length) {
+        let producto = listProducts.filter(function(p){return p.id == parseInt(params.id)});
+        // GUARDAR PRODUCTOS EN MEMORIA
+        listCarrito.push(producto);
+        res.json(producto);
+        // GUARDAR PRODUCTOS DEL CARRITO EN SISTEMA
+        let guardar = (name, info) => {
+            return fs.promises.appendFile('./carrito.txt', info)
+        };
+        async function myFunc () {
+            try {
+                const writeFile = await guardar('./carrito.txt', JSON.stringify(listProducts, null, '\t'))
+                console.log("Archivo guardado con éxito.")
+            }
+            catch (err) {
+                console.log("Error en guardar.", err)
+            }
+        }
+        myFunc();
+    } else {
+        res.json({error: 'Producto no encontrado'})
+    } 
 });
 
 cart.delete('/borrar/:id', (req,res)=>{
-    req.json(body)
+    let params = req.params;        
+    if (parseInt(params.id)>0 && parseInt(params.id)<=listCarrito.length) {
+        let producto = listCarrito.filter(function(p){return p.id == parseInt(params.id)});
+        //console.log(producto)
+        listCarrito.shift(producto);
+        res.json(producto);
+        //res.json(listProducts)
+    } else {
+        res.json({error: 'Producto no encontrado'})
+    } 
 });
